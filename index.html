@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodingLab · Premium Login</title>
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0F172A;
+      color: #222;
+    }
+
+    /* ----- FULLSCREEN HERO (background) ----- */
+    .hero {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('images/laptop_image.webp') center / cover no-repeat;
+      z-index: 0;
+    }
+
+    /* dark purple/black overlay + slight blur */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 15, 40, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1;
+    }
+
+    /* ----- NAVBAR (transparent, on top) ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.20);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.10);
+      flex-wrap: wrap;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+    .nav-brand span {
+      background: linear-gradient(135deg, #A855F7, #7B2FF7);
+      padding: 0.15rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+      font-weight: 400;
+      font-size: 0.95rem;
+    }
+    .nav-links li a {
+      color: rgba(255, 255, 255, 0.80);
+      text-decoration: none;
+      transition: color 0.25s, border-bottom 0.25s;
+      padding-bottom: 0.25rem;
+      border-bottom: 2px solid transparent;
+    }
+    .nav-links li a:hover {
+      color: #fff;
+      border-bottom-color: #A855F7;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    .btn-login-nav {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      color: #fff;
+      padding: 0.4rem 1.6rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .btn-login-nav:hover {
+      background: #7B2FF7;
+      border-color: #7B2FF7;
+      box-shadow: 0 0 20px rgba(123, 47, 247, 0.35);
+      transform: scale(1.02);
+    }
+
+    /* ----- CENTER LOGIN CARD (always visible) ----- */
+    .card-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      pointer-events: none;   /* allows clicking through background, but card itself is clickable */
+    }
+
+    .login-card {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 380px;
+      padding: 2.2rem 2rem 2rem;
+      border-radius: 16px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.40);
+      transform: scale(1) translateY(0);
+      transition: transform 0.3s ease, box-shadow 0.3s;
+      pointer-events: auto;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    /* subtle scale on hover (optional) */
+    .login-card:hover {
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    /* close button (×) top-right */
+    .close-popup {
+      position: absolute;
+      top: 0.8rem;
+      right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      font-weight: 300;
+      line-height: 1;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.25s;
+    }
+    .close-popup:hover {
+      color: #222;
+      transform: rotate(90deg);
+    }
+
+    .login-card h2 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      margin-bottom: 1.6rem;
+      color: #222;
+      letter-spacing: -0.3px;
+    }
+
+    /* input groups with icons */
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .input-group i {
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      color: #8A2BE2;
+      font-size: 1.1rem;
+      width: 1.6rem;
+      text-align: center;
+      opacity: 0.7;
+      font-style: normal;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.6rem 0 0.5rem 2rem;
+      border: none;
+      border-bottom: 1.5px solid #d0d0d0;
+      background: transparent;
+      font-size: 0.95rem;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s;
+      outline: none;
+      color: #222;
+    }
+    .input-group input:focus {
+      border-bottom-color: #8A2BE2;
+    }
+    .input-group input::placeholder {
+      color: #aaa;
+      font-weight: 300;
+      font-size: 0.85rem;
+    }
+
+    /* remember & forgot row */
+    .row-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.3rem 0 1.8rem;
+      font-size: 0.85rem;
+    }
+    .row-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #444;
+      cursor: pointer;
+    }
+    .row-options label input[type="checkbox"] {
+      accent-color: #8A2BE2;
+      width: 1rem;
+      height: 1rem;
+    }
+    .forgot-link {
+      color: #7B2FF7;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .forgot-link:hover {
+      color: #A855F7;
+      text-decoration: underline;
+    }
+
+    /* Login Now button */
+    .btn-login {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, #8A2BE2, #7B2FF7);
+      border: none;
+      border-radius: 60px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 6px 20px rgba(123, 47, 247, 0.30);
+      letter-spacing: 0.3px;
+      margin-top: 0.2rem;
+    }
+    .btn-login:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(123, 47, 247, 0.50);
+      background: linear-gradient(135deg, #9A4BFF, #7B2FF7);
+    }
+
+    .signup-text {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .signup-text a {
+      color: #7B2FF7;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    .signup-text a:hover {
+      color: #A855F7;
+      text-decoration: underline;
+    }
+
+    /* ----- REGISTRATION FORM (hidden by default) ----- */
+    #registerForm {
+      display: none;
+    }
+    #registerForm .input-group {
+      margin-bottom: 1.2rem;
+    }
+
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.8rem 1.2rem;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .nav-links {
+        gap: 1.2rem;
+        font-size: 0.85rem;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.2rem;
+      }
+      .nav-actions {
+        margin-left: auto;
+      }
+      .nav-brand {
+        font-size: 1.1rem;
+      }
+      .login-card {
+        padding: 2rem 1.5rem;
+        max-width: 340px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.2rem;
+        padding: 0.6rem 0.8rem;
+      }
+      .nav-brand {
+        justify-content: center;
+      }
+      .nav-links {
+        justify-content: center;
+        gap: 0.8rem;
+        font-size: 0.8rem;
+        flex-wrap: wrap;
+      }
+      .nav-actions {
+        justify-content: center;
+        margin-left: 0;
+        margin-top: 0.2rem;
+      }
+      .login-card {
+        padding: 1.8rem 1.2rem;
+        max-width: 300px;
+      }
+      .row-options {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+    }
+
+    /* icon helpers (no external icon library) */
+    .icon-email::before { content: "✉"; }
+    .icon-lock::before { content: "🔒"; }
+    .input-group i { font-style: normal; }
+  </style>
+</head>
+<body>
+  <!-- HERO background -->
+  <div class="hero" role="img" aria-label="Workspace background"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span>CodingLab</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Product</a></li>
+      <li><a href="#">Services</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-login-nav" id="openPopupBtn">Login</button>
+    </div>
+  </nav>
+
+  <!-- CENTER CARD (always visible) -->
+  <div class="card-wrapper">
+    <div class="login-card" id="loginCard">
+      <button class="close-popup" id="closePopupBtn" aria-label="Close">&times;</button>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm">
+        <h2>Login</h2>
+        <div class="input-group">
+          <i class="icon-email"></i>
+          <input type="email" placeholder="Email address" />
+        </div>
+        <div class="input-group">
+          <i class="icon-lock"></i>
+          <input type="password" placeholder="Password" />
+        </div>
+        <div class="row-options">
+          <label><input type="checkbox" /> Remember Me</label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <button class="btn-login">Login Now</button>
+        <div class="signup-text">
+          Not a member? <a id="switchToRegister">Signup Now</a>
+        </div>
+      </div>
+
+      <!-- REGISTER FORM (hidden) -->
+      <div id="registerForm">
+        <h2>Sign Up</h2>
+        <div class="input-group">
+          <i class="icon-email"></i>
+          <input type="text" placeholder="Full name" />
+        </div>
+        <div class="input-group">
+          <i class="icon-email"></i>
+          <input type="email" placeholder="Email address" />
+        </div>
+        <div class="input-group">
+          <i class="icon-lock"></i>
+          <input type="password" placeholder="Password" />
+        </div>
+        <button class="btn-login">Create Account</button>
+        <div class="signup-text">
+          Already have an account? <a id="switchToLogin">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const switchToRegister = document.getElementById('switchToRegister');
+      const switchToLogin = document.getElementById('switchToLogin');
+      const closeBtn = document.getElementById('closePopupBtn');
+      const loginCard = document.getElementById('loginCard');
+
+      // always show login form on load
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+
+      // switch to register
+      switchToRegister.addEventListener('click', function(e) {
+        e.preventDefault();
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      });
+
+      // switch to login
+      switchToLogin.addEventListener('click', function(e) {
+        e.preventDefault();
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      });
+
+      // close (×) button → hides the card (with a nice transition)
+      closeBtn.addEventListener('click', function() {
+        loginCard.style.transition = 'opacity 0.3s, transform 0.3s';
+        loginCard.style.opacity = '0';
+        loginCard.style.transform = 'scale(0.92) translateY(8px)';
+        setTimeout(() => {
+          loginCard.style.display = 'none';
+        }, 300);
+      });
+
+      // (optional) you can re-show with a button, but we already have the Login button in navbar
+      // we'll use it to re-open the card if closed
+      const openBtn = document.getElementById('openPopupBtn');
+      openBtn.addEventListener('click', function() {
+        if (loginCard.style.display === 'none') {
+          loginCard.style.display = 'block';
+          // reset opacity and transform for smooth re-appear
+          loginCard.style.opacity = '0';
+          loginCard.style.transform = 'scale(0.92) translateY(8px)';
+          // force reflow then animate
+          void loginCard.offsetHeight;
+          loginCard.style.transition = 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)';
+          loginCard.style.opacity = '1';
+          loginCard.style.transform = 'scale(1) translateY(0)';
+        } else {
+          // if already visible, just a subtle pulse (optional)
+          loginCard.style.transition = 'transform 0.15s';
+          loginCard.style.transform = 'scale(0.97)';
+          setTimeout(() => {
+            loginCard.style.transform = 'scale(1)';
+          }, 150);
+        }
+        // also reset to login form when opened from nav (user expectation)
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      });
+
+      // if the card was hidden and user clicks anywhere outside? we don't auto-close.
+      // but we keep it simple.
+
+      console.log('Premium login page — always visible.');
+    })();
+  </script>
+</body>
+</html>
