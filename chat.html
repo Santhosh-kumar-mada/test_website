@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodingLab · Chat</title>
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: #0F172A;
+      color: #222;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ----- FULLSCREEN HERO (background) ----- */
+    .hero {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('images/bg.jpg') center / cover no-repeat;
+      z-index: 0;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 15, 40, 0.70);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+
+    /* ----- NAVBAR ----- */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 20;
+      background: rgba(15, 23, 42, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+    .nav-brand span {
+      background: linear-gradient(135deg, #A855F7, #7B2FF7);
+      padding: 0.15rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 500;
+    }
+    .btn-logout {
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      color: #fff;
+      padding: 0.4rem 1.6rem;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      backdrop-filter: blur(4px);
+      background: rgba(255,255,255,0.02);
+    }
+    .btn-logout:hover {
+      background: #7B2FF7;
+      border-color: #7B2FF7;
+      box-shadow: 0 0 20px rgba(123, 47, 247, 0.35);
+      transform: scale(1.02);
+    }
+
+    /* ----- CHAT CONTAINER ----- */
+    .chat-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 1.5rem 5rem;
+      pointer-events: none;
+    }
+    .chat-container {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 800px;
+      height: 100%;
+      max-height: 600px;
+      border-radius: 16px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ----- MESSAGES AREA ----- */
+    .messages-area {
+      flex: 1;
+      padding: 1.5rem 1.5rem 0.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .messages-area::-webkit-scrollbar {
+      width: 4px;
+    }
+    .messages-area::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 10px;
+    }
+    .messages-area::-webkit-scrollbar-thumb {
+      background: #8A2BE2;
+      border-radius: 10px;
+    }
+
+    /* ----- MESSAGE BUBBLE (anonymous) ----- */
+    .message-bubble {
+      background: #f0eaff;
+      padding: 0.7rem 1.2rem;
+      border-radius: 18px 18px 18px 4px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #222;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ----- INPUT AREA (fixed bottom) ----- */
+    .input-area {
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid rgba(0,0,0,0.04);
+      display: flex;
+      gap: 0.8rem;
+      background: #fff;
+      border-radius: 0 0 16px 16px;
+    }
+    .input-area input {
+      flex: 1;
+      padding: 0.7rem 1.2rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 60px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
+      background: #f9f9f9;
+    }
+    .input-area input:focus {
+      border-color: #8A2BE2;
+      background: #fff;
+    }
+    .input-area input::placeholder {
+      color: #aaa;
+      font-weight: 300;
+    }
+    .btn-send {
+      background: linear-gradient(135deg, #8A2BE2, #7B2FF7);
+      border: none;
+      border-radius: 60px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.7rem 1.8rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 15px rgba(123,47,247,0.25);
+      white-space: nowrap;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(123,47,247,0.40);
+      background: linear-gradient(135deg, #9A4BFF, #7B2FF7);
+    }
+
+    /* empty state */
+    .empty-state {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-top: 2rem;
+      font-weight: 300;
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .navbar { padding: 0.8rem 1.2rem; }
+      .chat-wrapper { padding: 4.5rem 1rem 4.5rem; }
+      .chat-container { max-height: 80vh; border-radius: 12px; }
+      .messages-area { padding: 1rem 1rem 0.3rem; }
+      .input-area { padding: 0.8rem 1rem 1.2rem; }
+      .message-bubble { max-width: 90%; font-size: 0.9rem; }
+      .btn-send { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+    }
+    @media (max-width: 480px) {
+      .navbar { padding: 0.6rem 0.8rem; flex-direction: column; gap: 0.3rem; }
+      .nav-brand { font-size: 1.1rem; }
+      .chat-wrapper { padding: 5rem 0.6rem 0.6rem; }
+      .chat-container { border-radius: 10px; max-height: 90vh; }
+      .messages-area { padding: 0.8rem 0.8rem 0.2rem; }
+      .input-area { padding: 0.6rem 0.8rem 1rem; gap: 0.5rem; flex-wrap: wrap; }
+      .input-area input { flex: 1 1 100%; }
+      .btn-send { flex: 1; justify-content: center; padding: 0.6rem; }
+      .message-bubble { max-width: 95%; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <div class="hero"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand"><span>CodingLab</span></div>
+    <button class="btn-logout" id="logoutBtn">Logout</button>
+  </nav>
+
+  <!-- CHAT WRAPPER -->
+  <div class="chat-wrapper">
+    <div class="chat-container">
+      <!-- Messages -->
+      <div class="messages-area" id="messagesArea">
+        <div class="empty-state">No messages yet. Start the conversation!</div>
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Write your message..." />
+        <button class="btn-send" id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // -------------------- FIREBASE CONFIG (same as login) --------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdmAuyk6OSZPGwbAm3hlxXA37cvx_1_So",
+      authDomain: "codinglab-chat.firebaseapp.com",
+      projectId: "codinglab-chat",
+      storageBucket: "codinglab-chat.firebasestorage.app",
+      messagingSenderId: "1044316367365",
+      appId: "1:1044316367365:web:f584b8a1189f74f1b60a6c",
+      measurementId: "G-QXFN18RGHT"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // -------------------- DOM REFS --------------------
+    const messagesArea = document.getElementById('messagesArea');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // -------------------- AUTH STATE --------------------
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // -------------------- LOGOUT --------------------
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await auth.signOut();
+        window.location.href = 'index.html';
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+    });
+
+    // -------------------- FIRESTORE: realtime messages --------------------
+    const messagesRef = db.collection('messages').orderBy('createdAt', 'asc');
+
+    messagesRef.onSnapshot(snapshot => {
+      messagesArea.innerHTML = '';
+
+      if (snapshot.empty) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'No messages yet. Start the conversation!';
+        messagesArea.appendChild(empty);
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const messageText = data.message || '';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
+        bubble.textContent = messageText;
+        messagesArea.appendChild(bubble);
+      });
+
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+    }, error => {
+      console.error('Firestore listener error:', error);
+    });
+
+    // -------------------- SEND MESSAGE --------------------
+    async function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert('You must be logged in to send messages.');
+        return;
+      }
+
+      try {
+        await messagesRef.add({
+          message: text,
+          uid: user.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        messageInput.value = '';
+        messageInput.focus();
+      } catch (err) {
+        console.error('Send error:', err);
+        alert('Failed to send message. Please try again.');
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+
+    messageInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

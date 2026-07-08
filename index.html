@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CodingLab · Premium Login</title>
+  <title>CodingLab · Login</title>
   <!-- Google Font: Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       min-height: 100vh;
@@ -24,6 +23,7 @@
       justify-content: center;
       background: #0F172A;
       color: #222;
+      overflow: hidden;
     }
 
     /* ----- FULLSCREEN HERO (background) ----- */
@@ -33,22 +33,20 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: url('images/laptop_image.webp') center / cover no-repeat;
+      background: url('images/bg.jpg') center / cover no-repeat;
       z-index: 0;
     }
-
-    /* dark purple/black overlay + slight blur */
     .hero::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(20, 15, 40, 0.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(20, 15, 40, 0.70);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       z-index: 1;
     }
 
-    /* ----- NAVBAR (transparent, on top) ----- */
+    /* ----- NAVBAR ----- */
     .navbar {
       position: fixed;
       top: 0;
@@ -59,14 +57,13 @@
       align-items: center;
       justify-content: space-between;
       z-index: 20;
-      background: rgba(15, 23, 42, 0.20);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.10);
+      background: rgba(15, 23, 42, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.15);
       flex-wrap: wrap;
     }
-
     .nav-brand {
       display: flex;
       align-items: center;
@@ -84,7 +81,6 @@
       color: #fff;
       font-weight: 500;
     }
-
     .nav-links {
       display: flex;
       gap: 2.2rem;
@@ -93,7 +89,7 @@
       font-size: 0.95rem;
     }
     .nav-links li a {
-      color: rgba(255, 255, 255, 0.80);
+      color: rgba(255,255,255,0.75);
       text-decoration: none;
       transition: color 0.25s, border-bottom 0.25s;
       padding-bottom: 0.25rem;
@@ -103,7 +99,6 @@
       color: #fff;
       border-bottom-color: #A855F7;
     }
-
     .nav-actions {
       display: flex;
       align-items: center;
@@ -111,7 +106,7 @@
     }
     .btn-login-nav {
       background: transparent;
-      border: 1.5px solid rgba(255, 255, 255, 0.45);
+      border: 1.5px solid rgba(255,255,255,0.45);
       color: #fff;
       padding: 0.4rem 1.6rem;
       border-radius: 40px;
@@ -120,13 +115,8 @@
       cursor: pointer;
       transition: all 0.25s;
       backdrop-filter: blur(4px);
-      background: rgba(255, 255, 255, 0.02);
-    }
-    .btn-login-nav:hover {
-      background: #7B2FF7;
-      border-color: #7B2FF7;
-      box-shadow: 0 0 20px rgba(123, 47, 247, 0.35);
-      transform: scale(1.02);
+      background: rgba(255,255,255,0.02);
+      pointer-events: none; /* login page, no action needed */
     }
 
     /* ----- CENTER LOGIN CARD (always visible) ----- */
@@ -138,47 +128,19 @@
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      pointer-events: none;   /* allows clicking through background, but card itself is clickable */
+      pointer-events: none;
     }
-
     .login-card {
       background: #FFFFFF;
       width: 100%;
       max-width: 380px;
       padding: 2.2rem 2rem 2rem;
       border-radius: 16px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.40);
-      transform: scale(1) translateY(0);
-      transition: transform 0.3s ease, box-shadow 0.3s;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
       pointer-events: auto;
       position: relative;
       margin: 0 auto;
     }
-
-    /* subtle scale on hover (optional) */
-    .login-card:hover {
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
-    }
-
-    /* close button (×) top-right */
-    .close-popup {
-      position: absolute;
-      top: 0.8rem;
-      right: 1.2rem;
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      font-weight: 300;
-      line-height: 1;
-      color: #666;
-      cursor: pointer;
-      transition: color 0.2s, transform 0.25s;
-    }
-    .close-popup:hover {
-      color: #222;
-      transform: rotate(90deg);
-    }
-
     .login-card h2 {
       font-size: 1.9rem;
       font-weight: 600;
@@ -187,7 +149,7 @@
       letter-spacing: -0.3px;
     }
 
-    /* input groups with icons */
+    /* input groups */
     .input-group {
       position: relative;
       margin-bottom: 1.5rem;
@@ -224,7 +186,6 @@
       font-size: 0.85rem;
     }
 
-    /* remember & forgot row */
     .row-options {
       display: flex;
       justify-content: space-between;
@@ -255,7 +216,6 @@
       text-decoration: underline;
     }
 
-    /* Login Now button */
     .btn-login {
       width: 100%;
       padding: 0.8rem;
@@ -268,13 +228,13 @@
       font-family: 'Poppins', sans-serif;
       cursor: pointer;
       transition: all 0.25s;
-      box-shadow: 0 6px 20px rgba(123, 47, 247, 0.30);
+      box-shadow: 0 6px 20px rgba(123,47,247,0.30);
       letter-spacing: 0.3px;
       margin-top: 0.2rem;
     }
     .btn-login:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(123, 47, 247, 0.50);
+      box-shadow: 0 12px 35px rgba(123,47,247,0.50);
       background: linear-gradient(135deg, #9A4BFF, #7B2FF7);
     }
 
@@ -296,7 +256,7 @@
       text-decoration: underline;
     }
 
-    /* ----- REGISTRATION FORM (hidden by default) ----- */
+    /* register form hidden by default */
     #registerForm {
       display: none;
     }
@@ -304,80 +264,44 @@
       margin-bottom: 1.2rem;
     }
 
-    /* ----- RESPONSIVE ----- */
+    /* error message */
+    .auth-error {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin: -0.5rem 0 0.8rem;
+      text-align: center;
+      min-height: 1.2rem;
+    }
+
+    /* responsive */
     @media (max-width: 768px) {
-      .navbar {
-        padding: 0.8rem 1.2rem;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-      }
-      .nav-links {
-        gap: 1.2rem;
-        font-size: 0.85rem;
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        margin-top: 0.2rem;
-      }
-      .nav-actions {
-        margin-left: auto;
-      }
-      .nav-brand {
-        font-size: 1.1rem;
-      }
-      .login-card {
-        padding: 2rem 1.5rem;
-        max-width: 340px;
-      }
+      .navbar { padding: 0.8rem 1.2rem; flex-wrap: wrap; gap: 0.4rem; }
+      .nav-links { gap: 1.2rem; font-size: 0.85rem; order: 3; width: 100%; justify-content: center; margin-top: 0.2rem; }
+      .nav-actions { margin-left: auto; }
+      .nav-brand { font-size: 1.1rem; }
+      .login-card { padding: 2rem 1.5rem; max-width: 340px; }
     }
-
     @media (max-width: 480px) {
-      .navbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.2rem;
-        padding: 0.6rem 0.8rem;
-      }
-      .nav-brand {
-        justify-content: center;
-      }
-      .nav-links {
-        justify-content: center;
-        gap: 0.8rem;
-        font-size: 0.8rem;
-        flex-wrap: wrap;
-      }
-      .nav-actions {
-        justify-content: center;
-        margin-left: 0;
-        margin-top: 0.2rem;
-      }
-      .login-card {
-        padding: 1.8rem 1.2rem;
-        max-width: 300px;
-      }
-      .row-options {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        justify-content: center;
-      }
+      .navbar { flex-direction: column; align-items: stretch; gap: 0.2rem; padding: 0.6rem 0.8rem; }
+      .nav-brand { justify-content: center; }
+      .nav-links { justify-content: center; gap: 0.8rem; font-size: 0.8rem; flex-wrap: wrap; }
+      .nav-actions { justify-content: center; margin-left: 0; margin-top: 0.2rem; }
+      .login-card { padding: 1.8rem 1.2rem; max-width: 300px; }
+      .row-options { flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
     }
 
-    /* icon helpers (no external icon library) */
     .icon-email::before { content: "✉"; }
     .icon-lock::before { content: "🔒"; }
     .input-group i { font-style: normal; }
   </style>
 </head>
 <body>
-  <!-- HERO background -->
-  <div class="hero" role="img" aria-label="Workspace background"></div>
+  <!-- HERO -->
+  <div class="hero"></div>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-brand">
-      <span>CodingLab</span>
-    </div>
+    <div class="nav-brand"><span>CodingLab</span></div>
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
       <li><a href="#">Product</a></li>
@@ -385,52 +309,48 @@
       <li><a href="#">Contact</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="btn-login-nav" id="openPopupBtn">Login</button>
+      <button class="btn-login-nav">Login</button>
     </div>
   </nav>
 
-  <!-- CENTER CARD (always visible) -->
+  <!-- LOGIN CARD -->
   <div class="card-wrapper">
     <div class="login-card" id="loginCard">
-      <button class="close-popup" id="closePopupBtn" aria-label="Close">&times;</button>
-
-      <!-- LOGIN FORM -->
+      <!-- Login Form -->
       <div id="loginForm">
         <h2>Login</h2>
         <div class="input-group">
           <i class="icon-email"></i>
-          <input type="email" placeholder="Email address" />
+          <input type="email" id="loginEmail" placeholder="Email address" />
         </div>
         <div class="input-group">
           <i class="icon-lock"></i>
-          <input type="password" placeholder="Password" />
+          <input type="password" id="loginPassword" placeholder="Password" />
         </div>
         <div class="row-options">
-          <label><input type="checkbox" /> Remember Me</label>
+          <label><input type="checkbox" id="rememberMe" /> Remember Me</label>
           <a href="#" class="forgot-link">Forgot Password?</a>
         </div>
-        <button class="btn-login">Login Now</button>
+        <div id="loginError" class="auth-error"></div>
+        <button class="btn-login" id="loginBtn">Login Now</button>
         <div class="signup-text">
           Not a member? <a id="switchToRegister">Signup Now</a>
         </div>
       </div>
 
-      <!-- REGISTER FORM (hidden) -->
+      <!-- Register Form -->
       <div id="registerForm">
         <h2>Sign Up</h2>
         <div class="input-group">
           <i class="icon-email"></i>
-          <input type="text" placeholder="Full name" />
-        </div>
-        <div class="input-group">
-          <i class="icon-email"></i>
-          <input type="email" placeholder="Email address" />
+          <input type="email" id="registerEmail" placeholder="Email address" />
         </div>
         <div class="input-group">
           <i class="icon-lock"></i>
-          <input type="password" placeholder="Password" />
+          <input type="password" id="registerPassword" placeholder="Password" />
         </div>
-        <button class="btn-login">Create Account</button>
+        <div id="registerError" class="auth-error"></div>
+        <button class="btn-login" id="registerBtn">Create Account</button>
         <div class="signup-text">
           Already have an account? <a id="switchToLogin">Login</a>
         </div>
@@ -438,77 +358,121 @@
     </div>
   </div>
 
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
   <script>
-    (function() {
-      'use strict';
+    // -------------------- FIREBASE CONFIG (using Compat SDK) --------------------
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdmAuyk6OSZPGwbAm3hlxXA37cvx_1_So",
+      authDomain: "codinglab-chat.firebaseapp.com",
+      projectId: "codinglab-chat",
+      storageBucket: "codinglab-chat.firebasestorage.app",
+      messagingSenderId: "1044316367365",
+      appId: "1:1044316367365:web:f584b8a1189f74f1b60a6c",
+      measurementId: "G-QXFN18RGHT"
+    };
 
-      const loginForm = document.getElementById('loginForm');
-      const registerForm = document.getElementById('registerForm');
-      const switchToRegister = document.getElementById('switchToRegister');
-      const switchToLogin = document.getElementById('switchToLogin');
-      const closeBtn = document.getElementById('closePopupBtn');
-      const loginCard = document.getElementById('loginCard');
+    // Initialize Firebase using Compat SDK
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-      // always show login form on load
+    // -------------------- DOM REFS --------------------
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const switchToRegister = document.getElementById('switchToRegister');
+    const switchToLogin = document.getElementById('switchToLogin');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const registerEmail = document.getElementById('registerEmail');
+    const registerPassword = document.getElementById('registerPassword');
+    const loginError = document.getElementById('loginError');
+    const registerError = document.getElementById('registerError');
+    const rememberMe = document.getElementById('rememberMe');
+
+    // -------------------- UI HELPERS --------------------
+    function showLoginForm() {
       loginForm.style.display = 'block';
       registerForm.style.display = 'none';
+      loginError.textContent = '';
+      registerError.textContent = '';
+    }
+    function showRegisterForm() {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      loginError.textContent = '';
+      registerError.textContent = '';
+    }
 
-      // switch to register
-      switchToRegister.addEventListener('click', function(e) {
-        e.preventDefault();
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-      });
+    switchToRegister.addEventListener('click', (e) => { e.preventDefault(); showRegisterForm(); });
+    switchToLogin.addEventListener('click', (e) => { e.preventDefault(); showLoginForm(); });
 
-      // switch to login
-      switchToLogin.addEventListener('click', function(e) {
-        e.preventDefault();
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-      });
+    // -------------------- AUTH STATE --------------------
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // Already logged in → redirect to chat
+        window.location.href = 'chat.html';
+      }
+    });
 
-      // close (×) button → hides the card (with a nice transition)
-      closeBtn.addEventListener('click', function() {
-        loginCard.style.transition = 'opacity 0.3s, transform 0.3s';
-        loginCard.style.opacity = '0';
-        loginCard.style.transform = 'scale(0.92) translateY(8px)';
-        setTimeout(() => {
-          loginCard.style.display = 'none';
-        }, 300);
-      });
+    // -------------------- LOGIN --------------------
+    loginBtn.addEventListener('click', async () => {
+      const email = loginEmail.value.trim();
+      const pass = loginPassword.value.trim();
+      if (!email || !pass) {
+        loginError.textContent = 'Please fill in all fields.';
+        return;
+      }
+      loginError.textContent = '';
+      
+      // Set persistence based on Remember Me checkbox
+      const persistence = rememberMe.checked 
+        ? firebase.auth.Auth.Persistence.LOCAL 
+        : firebase.auth.Auth.Persistence.SESSION;
+      
+      try {
+        await auth.setPersistence(persistence);
+        await auth.signInWithEmailAndPassword(email, pass);
+        // Redirect will happen via onAuthStateChanged
+      } catch (err) {
+        loginError.textContent = err.message;
+      }
+    });
 
-      // (optional) you can re-show with a button, but we already have the Login button in navbar
-      // we'll use it to re-open the card if closed
-      const openBtn = document.getElementById('openPopupBtn');
-      openBtn.addEventListener('click', function() {
-        if (loginCard.style.display === 'none') {
-          loginCard.style.display = 'block';
-          // reset opacity and transform for smooth re-appear
-          loginCard.style.opacity = '0';
-          loginCard.style.transform = 'scale(0.92) translateY(8px)';
-          // force reflow then animate
-          void loginCard.offsetHeight;
-          loginCard.style.transition = 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1)';
-          loginCard.style.opacity = '1';
-          loginCard.style.transform = 'scale(1) translateY(0)';
-        } else {
-          // if already visible, just a subtle pulse (optional)
-          loginCard.style.transition = 'transform 0.15s';
-          loginCard.style.transform = 'scale(0.97)';
-          setTimeout(() => {
-            loginCard.style.transform = 'scale(1)';
-          }, 150);
+    // -------------------- REGISTER --------------------
+    registerBtn.addEventListener('click', async () => {
+      const email = registerEmail.value.trim();
+      const pass = registerPassword.value.trim();
+      if (!email || !pass) {
+        registerError.textContent = 'Please fill in all fields.';
+        return;
+      }
+      registerError.textContent = '';
+      try {
+        await auth.createUserWithEmailAndPassword(email, pass);
+        // After signup, user is logged in → redirect via onAuthStateChanged
+      } catch (err) {
+        registerError.textContent = err.message;
+      }
+    });
+
+    // Enter key support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (loginForm.style.display !== 'none') {
+          loginBtn.click();
+        } else if (registerForm.style.display !== 'none') {
+          registerBtn.click();
         }
-        // also reset to login form when opened from nav (user expectation)
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-      });
+      }
+    });
 
-      // if the card was hidden and user clicks anywhere outside? we don't auto-close.
-      // but we keep it simple.
-
-      console.log('Premium login page — always visible.');
-    })();
+    console.log('Login page ready with Firebase Compat SDK.');
   </script>
 </body>
 </html>
